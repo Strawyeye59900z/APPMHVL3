@@ -96,11 +96,11 @@ log "Instalando dependências do backend..."
 cd "$APP_DIR/backend"
 npm install
 
-log "Compilando backend..."
-npm run build
-
 log "Gerando Prisma client..."
 npx prisma generate
+
+log "Compilando backend..."
+npm run build
 
 log "Aplicando migrations..."
 npx prisma migrate deploy

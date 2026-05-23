@@ -7,7 +7,7 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '@prisma/client';
+type UserRole = 'ADMIN' | 'EMPLOYEE' | 'RESIDENT';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {}

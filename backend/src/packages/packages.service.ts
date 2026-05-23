@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PackageType } from '@prisma/client';
+type PackageType = 'BOX' | 'ENVELOPE' | 'BAG';
 import { PrismaService } from '../prisma/prisma.service';
 import { WhatsappService } from '../whatsapp/whatsapp.service';
 

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { PackageType } from '@prisma/client';
+type PackageType = 'BOX' | 'ENVELOPE' | 'BAG';
 import { JwtAuthGuard, Roles, RolesGuard } from '../auth/jwt-auth.guard';
 import { PackagesService } from './packages.service';
 

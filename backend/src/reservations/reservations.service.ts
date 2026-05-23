@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ReservableSpace } from '@prisma/client';
+type ReservableSpace = 'COURT' | 'BBQ' | 'HALL';
 import { PrismaService } from '../prisma/prisma.service';
 
 const COURT_DAILY_HOUR_LIMIT = 4;

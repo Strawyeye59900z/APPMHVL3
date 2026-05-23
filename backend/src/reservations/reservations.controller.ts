@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import PDFDocument from 'pdfkit';
-import { ReservableSpace } from '@prisma/client';
+type ReservableSpace = 'COURT' | 'BBQ' | 'HALL';
 import { JwtAuthGuard, Roles, RolesGuard } from '../auth/jwt-auth.guard';
 import { ReservationsService } from './reservations.service';
 
