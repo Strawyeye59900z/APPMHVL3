@@ -212,7 +212,7 @@ export default function Portaria() {
                         <div style={{ fontWeight: 700, fontSize: 16 }}>AP {a.number}</div>
                         <div style={{ fontSize: 12, color: 'var(--muted)' }}>{a.residents?.length || a._count?.packages || 0} morador(es)</div>
                       </div>
-                      <Icon n="chev" size={18} color="var(--muted)" style={{ marginLeft: 'auto' } as any} />
+                      <div style={{ marginLeft: 'auto' }}><Icon n="chev" size={18} color="var(--muted)" /></div>
                     </button>
                   ))}
                 </div>
