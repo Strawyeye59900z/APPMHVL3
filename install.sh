@@ -14,6 +14,11 @@ NODE_VERSION="20"
 DB_NAME="appcondominio"
 DB_USER="appcondominio"
 DB_PASS="$(openssl rand -hex 16)"
+# If .env already exists, reuse the existing password to avoid mismatch
+if [ -f "/opt/appcondominio/backend/.env" ]; then
+  _existing=$(grep '^DATABASE_URL=' /opt/appcondominio/backend/.env | sed 's|.*://[^:]*:\([^@]*\)@.*|\1|')
+  [ -n "$_existing" ] && DB_PASS="$_existing"
+fi
 DOMAIN="mhvl.com.br"
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
@@ -48,8 +53,11 @@ log "Configurando PostgreSQL..."
 service postgresql start || true
 sleep 2
 
-su -c "psql -tc \"SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'\"" postgres | grep -q 1 || \
+if su -c "psql -tc \"SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'\"" postgres | grep -q 1; then
+  su -c "psql -c \"ALTER USER $DB_USER WITH PASSWORD '$DB_PASS';\"" postgres
+else
   su -c "psql -c \"CREATE USER $DB_USER WITH PASSWORD '$DB_PASS';\"" postgres
+fi
 
 su -c "psql -tc \"SELECT 1 FROM pg_database WHERE datname='$DB_NAME'\"" postgres | grep -q 1 || \
   su -c "psql -c \"CREATE DATABASE $DB_NAME OWNER $DB_USER;\"" postgres
@@ -146,7 +154,8 @@ EOF
 pm2 delete mhvl-backend mhvl-frontend 2>/dev/null || true
 pm2 start "$APP_DIR/ecosystem.config.js"
 pm2 save
-pm2 startup systemd -u root --hp /root | tail -1 | bash
+env PATH=$PATH:/usr/bin pm2 startup systemd -u root --hp /root
+systemctl enable pm2-root 2>/dev/null || true
 
 # ── 10. Nginx como proxy local ───────────────────────────────
 log "Configurando Nginx..."

@@ -186,7 +186,9 @@ export default function Portaria() {
                   style={{ fontSize: 20, padding: '16px 16px 16px 44px' }}
                   autoFocus
                 />
-                <Icon n="search" size={18} color="var(--muted)" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' } as any} />
+                <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }}>
+                  <Icon n="search" size={18} color="var(--muted)" />
+                </div>
                 <span className="caret" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', width: 2, height: 22, background: 'var(--primary)', borderRadius: 1 }} />
               </div>
               {filteredApts.length > 0 && (
