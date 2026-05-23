@@ -33,7 +33,7 @@ export function Icon({ n, size = 20, stroke = 1.6, color = 'currentColor', class
     ball: <g {...c}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18" /></g>,
     sparkles: <g {...c}><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.5 5.5l2.8 2.8M15.7 15.7l2.8 2.8M5.5 18.5l2.8-2.8M15.7 8.3l2.8-2.8" /></g>,
     grid: <g {...c}><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></g>,
-    logout: <g {...c}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16,17 21,12 16,7" {...c} /><line x1="21" y1="12" x2="9" y2="12" {...c} /></g>,
+    logout: <g {...c}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16,17 21,12 16,7" fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" /><line x1="21" y1="12" x2="9" y2="12" fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round" /></g>,
   };
 
   return (
