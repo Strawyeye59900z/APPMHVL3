@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  EMPLOYEE
+  RESIDENT
+}
+
+enum FacialStatus {
+  PENDING
+  REGISTERED
+}
+
+enum PackageType {
+  BOX
+  ENVELOPE
+  BAG
+}
+
+enum PackageStatus {
+  PENDING
+  PICKED_UP
+}
+
+enum ReservableSpace {
+  COURT
+  BBQ
+  HALL
+}
+
+enum ReservationStatus {
+  ACTIVE
+  CANCELLED
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Employee {
+  id              String    @id
+  password        String
+  name            String
+  photoUrl        String?
+  mustChangePass  Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  packages        Package[]
+}
+
+model Apartment {
+  id              String     @id @default(cuid())
+  number          String     @unique
+  password        String
+  firstAccessDone Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  residents       Resident[]
+  packages        Package[]
+  reservations    Reservation[]
+}
+
+model Resident {
+  id            String        @id @default(cuid())
+  apartmentId   String
+  apartment     Apartment     @relation(fields: [apartmentId], references: [id], onDelete: Cascade)
+  name          String
+  phone         String?
+  isPrimary     Boolean       @default(false)
+  photoDriveId  String?
+  facialStatus  FacialStatus  @default(PENDING)
+  createdAt     DateTime      @default(now())
+  packages      Package[]
+
+  @@index([facialStatus, createdAt])
+}
+
+model Package {
+  id           String        @id @default(cuid())
+  apartmentId  String
+  apartment    Apartment     @relation(fields: [apartmentId], references: [id])
+  residentId   String
+  resident     Resident      @relation(fields: [residentId], references: [id])
+  employeeId   String
+  employee     Employee      @relation(fields: [employeeId], references: [id])
+  type         PackageType
+  status       PackageStatus @default(PENDING)
+  receivedAt   DateTime      @default(now())
+  pickedUpAt   DateTime?
+
+  @@index([apartmentId, status])
+}
+
+model Reservation {
+  id           String            @id @default(cuid())
+  apartmentId  String
+  apartment    Apartment         @relation(fields: [apartmentId], references: [id])
+  createdById  String
+  space        ReservableSpace
+  startsAt     DateTime
+  endsAt       DateTime
+  status       ReservationStatus @default(ACTIVE)
+  createdAt    DateTime          @default(now())
+
+  @@index([space, startsAt])
+}
