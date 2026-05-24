@@ -33,6 +33,19 @@ export class ApartmentsService {
     });
   }
 
+  async firstAccess(number: string, oldPass: string, newPass: string) {
+    const ap = await this.prisma.apartment.findUnique({ where: { number } });
+    if (!ap) throw new NotFoundException('Apartamento não encontrado');
+    if (!(await bcrypt.compare(oldPass, ap.password))) {
+      throw new BadRequestException('Senha atual inválida');
+    }
+    await this.prisma.apartment.update({
+      where: { id: ap.id },
+      data: { password: await bcrypt.hash(newPass, 10), firstAccessDone: true },
+    });
+    return { ok: true };
+  }
+
   addResident(apartmentId: string, data: { name: string; phone?: string; isPrimary?: boolean }) {
     return this.prisma.resident.create({ data: { apartmentId, ...data } });
   }

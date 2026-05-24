@@ -7,13 +7,18 @@ import { api } from '@/lib/api';
 export default function PrimeiroAcessoMorador() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [aptNumber, setAptNumber] = useState('');
   const [oldPass, setOldPass] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirm, setConfirm] = useState('');
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    setAptNumber(localStorage.getItem('apt_number') || '');
+  }, []);
+
   if (!mounted) return null;
 
   async function submit(e: React.FormEvent) {
@@ -22,10 +27,11 @@ export default function PrimeiroAcessoMorador() {
     if (newPass.length < 6) { setErr('A nova senha deve ter pelo menos 6 caracteres.'); return; }
     setErr(''); setLoading(true);
     try {
-      await api('/apartments/me/password', {
-        method: 'PUT',
-        body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass }),
+      await api('/apartments/first-access', {
+        method: 'POST',
+        body: JSON.stringify({ number: aptNumber, oldPassword: oldPass, newPassword: newPass }),
       });
+      localStorage.removeItem('apt_number');
       router.push('/morador');
     } catch (ex: any) {
       setErr(ex.message || 'Senha atual incorreta.');
@@ -49,13 +55,18 @@ export default function PrimeiroAcessoMorador() {
           <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 14, marginTop: 6 }}>
             Defina sua senha pessoal para continuar.
           </p>
+          {aptNumber && (
+            <p style={{ color: 'rgba(255,255,255,.5)', fontSize: 13, marginTop: 4 }}>
+              Apartamento {aptNumber}
+            </p>
+          )}
         </div>
 
         <div className="card">
           <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
               <label className="label" style={{ display: 'block', marginBottom: 6 }}>Senha provisória (atual)</label>
-              <input className="input" type="password" placeholder="Enviada pelo síndico" value={oldPass} onChange={e => setOldPass(e.target.value)} required />
+              <input className="input" type="password" placeholder="1234" value={oldPass} onChange={e => setOldPass(e.target.value)} required />
             </div>
             <div className="divider" />
             <div>

@@ -39,6 +39,7 @@ export default function LoginPage() {
           body: JSON.stringify({ apartment: apt, password: moradorPass }),
         });
         setSession(res.access_token, 'RESIDENT');
+        if (!res.firstAccessDone) localStorage.setItem('apt_number', apt);
         router.push(res.firstAccessDone ? '/morador' : '/morador/primeiro-acesso');
       } else {
         const staff = staffList[pickedStaff];
